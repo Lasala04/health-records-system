@@ -10,14 +10,49 @@ import { Visit } from './components/VisitModal';
 export default function Home() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load data from localStorage (temporary solution)
   useEffect(() => {
-    const savedPatients = localStorage.getItem('patients');
-    const savedVisits = localStorage.getItem('visits');
-    if (savedPatients) setPatients(JSON.parse(savedPatients));
-    if (savedVisits) setVisits(JSON.parse(savedVisits));
+    async function fetchData() {
+      try {
+        setLoading(true);
+        
+        // Fetch patients from API
+        const patientsRes = await fetch('/api/patients');
+        const patientsData = await patientsRes.json();
+        setPatients(patientsData);
+
+        // Fetch visits from API
+        const visitsRes = await fetch('/api/visits');
+        const visitsData = await visitsRes.json();
+        setVisits(visitsData);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    // Initial fetch
+    fetchData();
+    
+    // Auto-refresh every 30 seconds for real-time updates
+    const interval = setInterval(fetchData, 30000);
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Topnav />
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+          <div className="text-xl text-gray-600 dark:text-gray-400">Loading dashboard...</div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
