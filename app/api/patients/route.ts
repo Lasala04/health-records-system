@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const patients = db.prepare('SELECT * FROM patients ORDER BY created_at DESC').all();
     return NextResponse.json(patients);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch patients' }, { status: 500 });
   }
 }
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     stmt.run(id, name, dob, contact, bloodType || null, address || null);
 
     return NextResponse.json({ success: true, id });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create patient' }, { status: 500 });
   }
 }

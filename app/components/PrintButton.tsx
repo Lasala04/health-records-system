@@ -49,7 +49,8 @@ export default function PrintButton({ patients, visits }: PrintButtonProps) {
     `;
 
     patients.forEach(patient => {
-      const patientVisits = visits.filter(v => v.patientId === patient.id);
+      // FIXED: Changed patientId to patient_id
+      const patientVisits = visits.filter(v => v.patient_id === patient.id);
       html += `
         <tr>
           <td>${patient.name}</td>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export type Visit = {
   id: string;
@@ -18,21 +18,23 @@ type VisitModalProps = {
   patientId: string;
 };
 
-export default function VisitModal({ isOpen, onClose, onSave, patientId }: VisitModalProps) {
-  const [form, setForm] = useState<Visit>({
-    id: Date.now().toString(),
-    patient_id: patientId,
-    date: new Date().toISOString().split('T')[0],
-    diagnosis: '',
-    medication: '',
-    notes: '',
-  });
+const getEmptyVisit = (patientId: string): Visit => ({
+  id: Date.now().toString(),
+  patient_id: patientId,
+  date: new Date().toISOString().split('T')[0],
+  diagnosis: '',
+  medication: '',
+  notes: '',
+});
 
+export default function VisitModal({ isOpen, onClose, onSave, patientId }: VisitModalProps) {
+  // Initialize form with a function to avoid Date.now() during render
+  const [form, setForm] = useState<Visit>(() => getEmptyVisit(patientId));
   const firstInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setForm(prev => ({ ...prev, patientId }));
-  }, [patientId]);
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen && firstInputRef.current) {
@@ -43,13 +45,13 @@ export default function VisitModal({ isOpen, onClose, onSave, patientId }: Visit
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose();
+        handleClose();
       }
     };
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -58,15 +60,8 @@ export default function VisitModal({ isOpen, onClose, onSave, patientId }: Visit
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onSave({ ...form, id: Date.now().toString() });
-    onClose();
-    setForm({
-      id: Date.now().toString(),
-      patientId,
-      date: new Date().toISOString().split('T')[0],
-      diagnosis: '',
-      medication: '',
-      notes: '',
-    });
+    handleClose();
+    setForm(getEmptyVisit(patientId));
   }
 
   if (!isOpen) return null;
@@ -85,7 +80,7 @@ export default function VisitModal({ isOpen, onClose, onSave, patientId }: Visit
               Add Medical Visit
             </h2>
             <button 
-              onClick={onClose} 
+              onClick={handleClose} 
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
               aria-label="Close modal"
             >
@@ -157,7 +152,7 @@ export default function VisitModal({ isOpen, onClose, onSave, patientId }: Visit
             <div className="flex gap-3 pt-4">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Cancel

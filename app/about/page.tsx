@@ -13,8 +13,8 @@ export default function AboutPage() {
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Project Information</h3>
             <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
               This website is created in compliance of the completions of the following projects simultaneously: 
-              <span className="font-semibold"> "Server Administration Finals Project"</span> and 
-              <span className="font-semibold"> "Health Information Management Finals Project"</span>
+              <span className="font-semibold"> &quot;Server Administration Finals Project&quot;</span> and 
+              <span className="font-semibold"> &quot;Health Information Management Finals Project&quot;</span>
             </p>
           </div>
 
@@ -38,14 +38,13 @@ export default function AboutPage() {
                 <li>• Alfaro, Larrah Shayne Ashley B.</li>
                 <li>• David, John Angelo</li>
                 <li>• Mayam, James Angelo</li>
-                <li>• Ugay, Princess Ellein S.</li>
               </ul>
             </div>
           </div>
 
           <div className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-lg p-8 text-center">
             <p className="text-lg text-gray-800 dark:text-white font-medium italic">
-              "Without the help of the following people below, this project would have not been possible."
+              &quot;Without the help of the following people below, this project would have not been possible.&quot;
             </p>
           </div>
 

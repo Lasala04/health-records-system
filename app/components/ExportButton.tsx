@@ -15,7 +15,8 @@ export default function ExportButton({ patients, visits }: ExportButtonProps) {
 
     // Add patient data
     patients.forEach(patient => {
-      const patientVisits = visits.filter(v => v.patientId === patient.id);
+      // CHANGE: patientId → patient_id
+      const patientVisits = visits.filter(v => v.patient_id === patient.id);
       const lastVisit = patientVisits.length > 0 
         ? patientVisits[patientVisits.length - 1].date 
         : 'None';
